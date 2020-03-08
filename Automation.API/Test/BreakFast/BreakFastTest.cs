@@ -1,6 +1,8 @@
 using Automation.API.Model;
 using Automation.API.Utility;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
+using System;
 using System.Net.Http;
 
 namespace Automation.API
@@ -8,16 +10,14 @@ namespace Automation.API
     public class BreakFastTest
     {
         StandardHttpClient _standardHttpClient;
-
         [SetUp]
         public void Setup()
         {
-            var baseUrl = "https://www.w3schools.com/";
+            var baseUrl = DataProvider.GetConfiguration("ApiEndpoint");
             _standardHttpClient = new StandardHttpClient(new HttpClient(), baseUrl);
         }
 
         [Test]
-        [Parallelizable(ParallelScope.All)]
         public void Test1()
         {
             var x = _standardHttpClient.GetRequestXml<BreakfastMenu>("xml/simple.xml");
@@ -25,7 +25,6 @@ namespace Automation.API
         }
 
         [Test]
-        [Parallelizable(ParallelScope.All)]
         public void CheckResponseCode()
         {
             var x = _standardHttpClient.GetRequestXml<BreakfastMenu>("xml/simple.xml");
@@ -33,7 +32,6 @@ namespace Automation.API
         }
 
         [Test]
-        [Parallelizable(ParallelScope.All)]
         public void TestwithAutodata()
         {
             

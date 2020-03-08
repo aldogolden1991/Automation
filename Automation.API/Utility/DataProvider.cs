@@ -3,6 +3,7 @@ using AutoFixture.AutoMoq;
 using Automation.API.Model;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
 using System.Text;
@@ -17,13 +18,20 @@ namespace Automation.API.Utility
             return fixture.Create<T>();
         }
 
+        public static string GetConfiguration(string name)
+        {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var _config = new ConfigurationBuilder().AddJsonFile($"appsettings.{environment}.json").Build();
+            return _config[name];
+        }
 
         public static T ReadExcelFile<T>() where T : class
         {
+
             try
             {
                 //Lets open the existing excel file and read through its content . Open the excel using openxml sdk
-                using (SpreadsheetDocument doc = SpreadsheetDocument.Open(@"C:\Users\M1022152\Desktop\Book1.xlsx", false))
+                using (SpreadsheetDocument doc = SpreadsheetDocument.Open(GetConfiguration("TestDataPath"), false))
                 {
                     WorkbookPart workbookPart = doc.WorkbookPart;
                     Sheets thesheetcollection = workbookPart.Workbook.GetFirstChild<Sheets>();
